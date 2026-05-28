@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="center-card">
+    <div class="glass-panel form-card compact">
+        <div class="eyebrow">Admin console</div>
+        <h1>Admin Login</h1>
+        <p class="muted">Default login: admin / admin123</p>
+        <form method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button class="btn dark full" type="submit">Enter Dashboard</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

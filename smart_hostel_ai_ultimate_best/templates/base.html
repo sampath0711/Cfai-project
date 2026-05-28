@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Hostel AI Ultimate</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        const savedTheme = localStorage.getItem("theme") || "light";
+        document.documentElement.setAttribute("data-theme", savedTheme);
+    </script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<div class="blob blob-one"></div>
+<div class="blob blob-two"></div>
+<div class="noise"></div>
+
+<div id="loader">
+    <div class="loader-orb"></div>
+    <p>Loading Smart Hostel AI</p>
+</div>
+
+<nav class="glass-nav">
+    <a class="brand" href="/">
+        <span class="brand-orb"></span>
+        Smart Hostel AI
+    </a>
+
+    <div class="nav-links">
+        <button class="theme-toggle" onclick="toggleTheme()" type="button">☾</button>
+        <a href="/">Home</a>
+        {% if session.get("role") == "student" %}
+            <a href="/student/dashboard">Dashboard</a>
+            <a class="pill-link" href="/logout">Logout</a>
+        {% elif session.get("role") == "admin" %}
+            <a href="/admin/dashboard">Admin</a>
+            <a class="pill-link" href="/logout">Logout</a>
+        {% else %}
+            <a href="/student/login">Student</a>
+            <a href="/admin/login">Admin</a>
+        {% endif %}
+    </div>
+</nav>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="toast">{{ messages[0] }}</div>
+{% endif %}
+{% endwith %}
+
+<main class="page-shell reveal">
+    {% block content %}{% endblock %}
+</main>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
