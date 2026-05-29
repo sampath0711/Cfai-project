@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero-card glass-panel">
+    <div class="hero-text">
+        <div class="eyebrow">Ultimate AI College Project</div>
+        <h1>Smart Hostel Room Allocation with AI reasoning and premium Apple-style UI.</h1>
+        <p>
+            Login system, admin control, room analytics, recommendation cards, compatibility score,
+            waitlist, chatbot, floor map, dark mode, and explainable AI allocation.
+        </p>
+        <div class="hero-actions">
+            <a class="btn primary" href="/student/register">Student Register</a>
+            <a class="btn soft" href="/student/login">Student Login</a>
+            <a class="btn dark" href="/admin/login">Admin Login</a>
+        </div>
+    </div>
+
+    <div class="phone-preview">
+        <div class="phone-top"></div>
+        <div class="score-ring" style="--score:94">94%</div>
+        <h3>Best Match</h3>
+        <p>Room A101 • Low Risk</p>
+        <div class="mini-list">
+            <span>✓ CSP constraints passed</span>
+            <span>✓ Compatibility checked</span>
+            <span>✓ AI reasoning generated</span>
+        </div>
+    </div>
+</section>
+
+<section class="feature-grid">
+    <div class="glass-panel feature-card"><span class="icon">◌</span><h3>AI Room Matching</h3><p>Search + CSP + utility score for the best possible room.</p></div>
+    <div class="glass-panel feature-card"><span class="icon">✦</span><h3>Admin Analytics</h3><p>Occupancy, ratios, compatibility score, waitlist, and charts.</p></div>
+    <div class="glass-panel feature-card"><span class="icon">⌁</span><h3>Student Portal</h3><p>Personalized profile, available rooms, chatbot, and allocation result.</p></div>
+</section>
+
+<section class="glass-panel co-panel">
+    <h2>Course Outcome Mapping</h2>
+    <div class="co-grid">
+        <p><b>CO1:</b> States, actions, goals, costs, and constraints represented in Python + SQLite.</p>
+        <p><b>CO2:</b> Search finds possible rooms and ranks candidate states.</p>
+        <p><b>CO3:</b> CSP checks gender, year, capacity, and availability.</p>
+        <p><b>CO4:</b> Utility-based policy selects best allocation.</p>
+        <p><b>CO5:</b> Compatibility and conflict prediction handle uncertainty.</p>
+        <p><b>CO6:</b> Complete explainable AI pipeline with reasoning trace.</p>
+    </div>
+</section>
+{% endblock %}

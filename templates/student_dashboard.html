@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="dashboard-head">
+    <div class="student-head">
+        {% if student.profile_pic %}
+            <img class="avatar" src="{{ url_for('static', filename='uploads/' + student.profile_pic) }}">
+        {% else %}
+            <div class="avatar placeholder">{{ student.name[0] }}</div>
+        {% endif %}
+        <div>
+            <div class="eyebrow">Student dashboard</div>
+            <h1>Hello, {{ student.name }}</h1>
+            <p class="muted">Your personalized AI hostel allocation center.</p>
+        </div>
+    </div>
+    <a class="btn primary" href="/student/apply-allocation">Apply for AI Allocation</a>
+</div>
+
+<section class="announcement-strip glass-panel">
+    <h3>Notifications</h3>
+    {% for a in announcements %}
+        <p><b>{{ a.title }}:</b> {{ a.message }}</p>
+    {% endfor %}
+</section>
+
+<section class="dash-grid">
+    <div class="glass-panel profile-card">
+        <h2>My Profile</h2>
+        <div class="profile-lines">
+            <p><b>Email</b><span>{{ student.email }}</span></p>
+            <p><b>Gender</b><span>{{ student.gender }}</span></p>
+            <p><b>Year</b><span>{{ student.year }}</span></p>
+            <p><b>Study</b><span>{{ student.study_habit }}</span></p>
+            <p><b>Sleep</b><span>{{ student.sleep_time }}</span></p>
+            <p><b>Cleanliness</b><span>{{ student.cleanliness }}</span></p>
+            <p><b>Noise</b><span>{{ student.noise }}</span></p>
+        </div>
+    </div>
+
+    <div class="glass-panel allocation-card">
+        <h2>Allotted Room</h2>
+        {% if student.room_no %}
+            <div class="room-orb">{{ student.room_no }}</div>
+            <p>Block {{ student.block }} • Floor {{ student.floor }} • {{ student.room_type }}</p>
+            <div class="score-row">
+                <div class="compat-circle" style="--score: {{ student.compatibility_score }}">
+                    <span>{{ student.compatibility_score }}%</span>
+                </div>
+                <div>
+                    <p><b>Conflict Risk:</b> {{ student.conflict_risk }}</p>
+                    <p><b>Noise Level:</b> {{ student.noise_level }}</p>
+                </div>
+            </div>
+        {% elif student.waitlisted %}
+            <div class="empty-state">You are currently on the waitlist.</div>
+        {% else %}
+            <div class="empty-state">No room allotted yet.</div>
+        {% endif %}
+        <div class="reason-box">
+            <h3>AI Explainability Panel</h3>
+            <p>{{ student.explanation or "Apply for allocation to generate reasoning trace." }}</p>
+            <ul>
+                <li>Constraint check: Gender, year, and capacity</li>
+                <li>Compatibility check: Study, sleep, cleanliness, noise</li>
+                <li>Decision: Highest utility score selected</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="glass-panel table-panel">
+    <h2>AI Room Recommendation Cards</h2>
+    <p class="muted">These are available rooms matching your profile.</p>
+    <div class="room-card-grid">
+        {% for item in available %}
+        <div class="room-card">
+            {% if loop.index == 1 %}<span class="best-badge">Best Match</span>{% endif %}
+            <h3>Room {{ item.room.room_no }}</h3>
+            <p>Block {{ item.room.block }} • Floor {{ item.room.floor }}</p>
+            <p>{{ item.room.room_type }} • {{ item.room.noise_level }}</p>
+            <div class="compat-circle small" style="--score: {{ item.score }}"><span>{{ item.score }}%</span></div>
+            <p><b>Risk:</b> {{ item.risk }}</p>
+            <p class="muted">{{ item.reasons }}</p>
+        </div>
+        {% else %}
+        <p>No available rooms match your profile.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="glass-panel table-panel">
+    <h2>Hostel Floor Map</h2>
+    <div class="floor-map">
+        {% for item in available %}
+        <div class="map-room">{{ item.room.room_no }}<span>{{ item.room.available_beds }} beds</span></div>
+        {% else %}
+        <p>No rooms to visualize.</p>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="glass-panel table-panel">
+    <h2>Update Preferences</h2>
+    <form method="POST" action="/student/update-profile" class="inline-form">
+        <select name="year">
+            <option {% if student.year=="1st Year" %}selected{% endif %}>1st Year</option>
+            <option {% if student.year=="2nd Year" %}selected{% endif %}>2nd Year</option>
+            <option {% if student.year=="3rd Year" %}selected{% endif %}>3rd Year</option>
+        </select>
+        <select name="study_habit">
+            <option {% if student.study_habit=="Morning" %}selected{% endif %}>Morning</option>
+            <option {% if student.study_habit=="Night" %}selected{% endif %}>Night</option>
+        </select>
+        <select name="sleep_time">
+            <option {% if student.sleep_time=="Early" %}selected{% endif %}>Early</option>
+            <option {% if student.sleep_time=="Late" %}selected{% endif %}>Late</option>
+        </select>
+        <select name="cleanliness">
+            <option {% if student.cleanliness=="High" %}selected{% endif %}>High</option>
+            <option {% if student.cleanliness=="Medium" %}selected{% endif %}>Medium</option>
+            <option {% if student.cleanliness=="Low" %}selected{% endif %}>Low</option>
+        </select>
+        <select name="noise">
+            <option {% if student.noise=="Quiet" %}selected{% endif %}>Quiet</option>
+            <option {% if student.noise=="Moderate" %}selected{% endif %}>Moderate</option>
+            <option {% if student.noise=="Noisy" %}selected{% endif %}>Noisy</option>
+        </select>
+        <button class="btn soft" type="submit">Update</button>
+    </form>
+</section>
+
+<div class="chatbot">
+    <button class="chat-toggle" onclick="toggleChat()">AI</button>
+    <div class="chat-window" id="chatWindow">
+        <h3>AI Hostel Assistant</h3>
+        <div id="chatMessages" class="chat-messages">
+            <p><b>Bot:</b> Ask me: best room, available rooms, or why this room?</p>
+        </div>
+        <div class="chat-input">
+            <input id="chatQuestion" placeholder="Ask something...">
+            <button onclick="askBot()">Send</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

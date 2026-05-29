@@ -1,0 +1,37 @@
+PROJECT TITLE:
+Smart Hostel Room Allocation System Using AI - Ultimate Version
+
+ABSTRACT:
+This project is a Python-based smart hostel allocation web application that automates room allocation using AI reasoning. It includes student login, admin login, room management, availability checking, compatibility score calculation, conflict prediction, waitlist management, analytics dashboard, chatbot assistant, notifications, profile images, and explainable AI output.
+
+KEY FEATURES:
+1. Student registration and login
+2. Admin login
+3. Room add, edit, delete
+4. Student profile picture
+5. AI room recommendation cards
+6. Compatibility percentage circle
+7. Conflict risk prediction
+8. AI reasoning trace
+9. Waitlist system
+10. Admin analytics dashboard
+11. Charts for occupancy and gender ratio
+12. Search and filters
+13. Announcements
+14. AI chatbot assistant
+15. Floor map visualization
+16. Dark/light mode
+17. CSV report export
+18. Apple glassmorphism UI
+
+CO MAPPING:
+CO1: Uses Python classes, dictionaries, database records, states, actions, goals, costs, and constraints.
+CO2: Uses search to identify candidate rooms and rank them.
+CO3: Uses CSP constraints such as gender, year, room capacity, and availability.
+CO4: Uses utility-based decision making to choose the best room.
+CO5: Uses compatibility scoring and conflict risk prediction for uncertainty reasoning.
+CO6: Combines representation, search, CSP, uncertainty, decision logic, and explainable output in one complete AI pipeline.
+
+DEFAULT ADMIN:
+Username: admin
+Password: admin123

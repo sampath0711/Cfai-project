@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="dashboard-head">
+    <div>
+        <div class="eyebrow">Admin dashboard</div>
+        <h1>Hostel Control Center</h1>
+        <p class="muted">Manage rooms, analytics, announcements, and allocations.</p>
+    </div>
+    <a class="btn primary" href="/admin/report">Export Report CSV</a>
+</div>
+
+<section class="stats-grid">
+    <div class="glass-panel stat-card"><p>{{ analytics.total_rooms }}</p><span>Total Rooms</span></div>
+    <div class="glass-panel stat-card"><p>{{ analytics.total_students }}</p><span>Total Students</span></div>
+    <div class="glass-panel stat-card"><p>{{ analytics.occupancy_percent }}%</p><span>Occupancy</span></div>
+    <div class="glass-panel stat-card"><p>{{ analytics.avg_score }}%</p><span>Avg Compatibility</span></div>
+</section>
+
+<section class="chart-grid">
+    <div class="glass-panel chart-card"><h2>Occupancy Chart</h2><canvas id="occupancyChart"></canvas></div>
+    <div class="glass-panel chart-card"><h2>Gender Ratio</h2><canvas id="genderChart"></canvas></div>
+</section>
+
+<section class="glass-panel table-panel">
+    <h2>Post Announcement</h2>
+    <form method="POST" action="/admin/announcement" class="inline-form">
+        <input type="text" name="title" placeholder="Title" required>
+        <input type="text" name="message" placeholder="Message" required>
+        <button class="btn primary" type="submit">Post</button>
+    </form>
+    <div class="announcement-list">
+        {% for a in announcements %}
+            <p><b>{{ a.title }}</b> — {{ a.message }}</p>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="glass-panel table-panel">
+    <h2>Add New Room</h2>
+    <form method="POST" action="/admin/rooms/add" class="inline-form">
+        <input type="text" name="room_no" placeholder="Room No" required>
+        <select name="gender"><option>Male</option><option>Female</option></select>
+        <select name="year"><option>1st Year</option><option>2nd Year</option><option>3rd Year</option></select>
+        <input type="number" name="capacity" placeholder="Capacity" min="1" required>
+        <input type="text" name="block" placeholder="Block" required>
+        <input type="number" name="floor" placeholder="Floor" min="0" required>
+        <select name="noise_level"><option>Quiet</option><option>Moderate</option><option>Noisy</option></select>
+        <select name="room_type"><option>Standard</option><option>Premium</option></select>
+        <button class="btn primary" type="submit">Add Room</button>
+    </form>
+</section>
+
+<section class="glass-panel table-panel">
+    <h2>Search Students</h2>
+    <form method="GET" action="/admin/dashboard" class="inline-form">
+        <input type="text" name="search" placeholder="Search name/email">
+        <select name="gender"><option value="">All Gender</option><option>Male</option><option>Female</option></select>
+        <select name="year"><option value="">All Years</option><option>1st Year</option><option>2nd Year</option><option>3rd Year</option></select>
+        <button class="btn soft" type="submit">Filter</button>
+    </form>
+</section>
+
+<section class="glass-panel table-panel">
+    <h2>Manage Rooms</h2>
+    <div class="table-wrap">
+        <table>
+            <tr><th>Room</th><th>Block</th><th>Floor</th><th>Gender</th><th>Year</th><th>Type</th><th>Noise</th><th>Capacity</th><th>Occupied</th><th>Available</th><th>Actions</th></tr>
+            {% for r in rooms %}
+            <tr>
+                <td>{{ r.room_no }}</td><td>{{ r.block }}</td><td>{{ r.floor }}</td><td>{{ r.gender }}</td><td>{{ r.year }}</td><td>{{ r.room_type }}</td><td>{{ r.noise_level }}</td><td>{{ r.capacity }}</td><td>{{ r.occupied }}</td><td>{{ r.available_beds }}</td>
+                <td><a class="mini-btn" href="/admin/rooms/edit/{{ r.id }}">Edit</a><a class="mini-btn danger" onclick="return confirmDelete()" href="/admin/rooms/delete/{{ r.id }}">Delete</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</section>
+
+<section class="glass-panel table-panel">
+    <h2>Student Allocations</h2>
+    <div class="table-wrap">
+        <table>
+            <tr><th>Name</th><th>Email</th><th>Gender</th><th>Year</th><th>Room</th><th>Score</th><th>Risk</th><th>Waitlist</th><th>Actions</th></tr>
+            {% for s in students %}
+            <tr>
+                <td>{{ s.name }}</td><td>{{ s.email }}</td><td>{{ s.gender }}</td><td>{{ s.year }}</td><td>{{ s.room_no or "Not allocated" }}</td><td>{{ s.compatibility_score }}</td><td>{{ s.conflict_risk }}</td><td>{{ "Yes" if s.waitlisted else "No" }}</td>
+                <td><a class="mini-btn" href="/admin/student/auto-allocate/{{ s.id }}">Allocate</a><a class="mini-btn danger" href="/admin/student/remove-allocation/{{ s.id }}">Remove</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const occupancyData = [{{ analytics.occupied }}, {{ analytics.available }}];
+const genderData = [{{ analytics.male }}, {{ analytics.female }}];
+
+new Chart(document.getElementById("occupancyChart"), {
+    type: "doughnut",
+    data: { labels: ["Occupied", "Available"], datasets: [{ data: occupancyData }] },
+    options: { responsive: true }
+});
+
+new Chart(document.getElementById("genderChart"), {
+    type: "bar",
+    data: { labels: ["Male", "Female"], datasets: [{ label: "Students", data: genderData }] },
+    options: { responsive: true }
+});
+</script>
+{% endblock %}
